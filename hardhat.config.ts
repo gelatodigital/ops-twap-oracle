@@ -27,11 +27,49 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       forking: {
-        url: `https://eth-ropsten.alchemyapi.io/v2/${ALCHEMY_ID}`,
-        blockNumber: 10911528,
+        url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_ID}`,
+        blockNumber: 14068500,
       },
     },
-
+    arbitrum: {
+      url: `https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_ID}`,
+      chainId: 42161,
+      accounts: PK ? [PK] : [],
+    },
+    avalanche: {
+      url: "https://api.avax.network/ext/bc/C/rpc",
+      chainId: 43114,
+      accounts: PK ? [PK] : [],
+    },
+    bsc: {
+      url: "https://bsc-dataseed.binance.org/",
+      chainId: 56,
+      accounts: PK ? [PK] : [],
+    },
+    fantom: {
+      accounts: PK ? [PK] : [],
+      chainId: 250,
+      url: `https://rpcapi.fantom.network/`,
+    },
+    goerli: {
+      accounts: PK ? [PK] : [],
+      chainId: 5,
+      url: `https://eth-goerli.alchemyapi.io/v2/${ALCHEMY_ID}`,
+    },
+    mainnet: {
+      accounts: PK ? [PK] : [],
+      chainId: 1,
+      url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_ID}`,
+    },
+    matic: {
+      url: `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_ID}`,
+      accounts: PK ? [PK] : [],
+    },
+    rinkeby: {
+      accounts: PK ? [PK] : [],
+      chainId: 4,
+      url: `https://eth-rinkeby.alchemyapi.io/v2/${ALCHEMY_ID}`,
+    },
     ropsten: {
       accounts: PK ? [PK] : [],
       chainId: 3,
@@ -39,8 +77,10 @@ const config: HardhatUserConfig = {
     },
   },
 
-  etherscan: {
-    apiKey: ETHERSCAN_API_KEY ? ETHERSCAN_API_KEY : "",
+  verify: {
+    etherscan: {
+      apiKey: ETHERSCAN_API_KEY ? ETHERSCAN_API_KEY : "",
+    },
   },
 
   solidity: {

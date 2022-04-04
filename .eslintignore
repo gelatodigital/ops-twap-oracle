@@ -1,3 +1,5 @@
 cache
 dist
 typechain
+contracts/lib
+contracts/interfaces

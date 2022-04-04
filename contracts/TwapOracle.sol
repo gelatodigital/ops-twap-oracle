@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: Unlicense
+//SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.13;
 
 import {FixedPoint} from "./lib/FixedPoint.sol";
@@ -42,7 +42,7 @@ contract TwapOracle {
         if (_token == oracle.token0) {
             amountOut = oracle.price0Average.mul(_amountIn).decode144();
         } else {
-            require(_token == oracle.token1, "TwapOracle: INVALID_TOKEN");
+            require(_token == oracle.token1, "TwapOracle: Invalid token");
             amountOut = oracle.price1Average.mul(_amountIn).decode144();
         }
     }
@@ -50,7 +50,7 @@ contract TwapOracle {
     function createOracle(IUniswapV2Pair _pair) public {
         require(
             oracleOfPair[address(_pair)].blockTimestampLast == 0,
-            "TwapOracle: Exists"
+            "TwapOracle: Already created"
         );
 
         address token0 = _pair.token0();
@@ -60,7 +60,7 @@ contract TwapOracle {
         uint112 reserve1;
         (reserve0, reserve1, ) = _pair.getReserves();
 
-        require(reserve0 != 0 && reserve1 != 0, "TwapOracle: NO_RESERVES");
+        require(reserve0 != 0 && reserve1 != 0, "TwapOracle: No reserves");
 
         (
             uint256 _price0Cumulative,
@@ -79,9 +79,10 @@ contract TwapOracle {
         );
     }
 
+    //solhint-disable max-line-length
     function updateOracle(IUniswapV2Pair _pair) public {
         Oracle memory oracle = oracleOfPair[address(_pair)];
-        Oracle storage s_oracle = oracleOfPair[address(_pair)];
+        Oracle storage sOracle = oracleOfPair[address(_pair)];
 
         (
             uint256 price0Cumulative,
@@ -97,19 +98,19 @@ contract TwapOracle {
 
         // overflow is desired, casting never truncates
         // cumulative price is in (uq112x112 price * seconds) units so we simply wrap it after division by time elapsed
-        s_oracle.price0Average = FixedPoint.uq112x112(
+        sOracle.price0Average = FixedPoint.uq112x112(
             uint224(
                 (price0Cumulative - oracle.price0CumulativeLast) / timeElapsed
             )
         );
-        s_oracle.price1Average = FixedPoint.uq112x112(
+        sOracle.price1Average = FixedPoint.uq112x112(
             uint224(
                 (price1Cumulative - oracle.price1CumulativeLast) / timeElapsed
             )
         );
 
-        s_oracle.price0CumulativeLast = price0Cumulative;
-        s_oracle.price1CumulativeLast = price1Cumulative;
-        s_oracle.blockTimestampLast = blockTimestamp;
+        sOracle.price0CumulativeLast = price0Cumulative;
+        sOracle.price1CumulativeLast = price1Cumulative;
+        sOracle.blockTimestampLast = blockTimestamp;
     }
 }
